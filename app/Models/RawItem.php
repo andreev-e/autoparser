@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class RawItem extends Model
@@ -38,5 +38,10 @@ class RawItem extends Model
         }
 
         return null;
+    }
+
+    public function onlyBasic($option = true): Builder
+    {
+        return $this->query()->where('is_basic', $option);
     }
 }

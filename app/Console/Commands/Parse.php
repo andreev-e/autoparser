@@ -35,7 +35,7 @@ class Parse extends Command
                 $content = json_decode($response->getBody(), true);
                 foreach ($content['data']['items'] as $item) {
                     foreach ($item as $key => $itemDatum) {
-                        $item[$key] = json_encode($itemDatum);
+                        $item[$key] = is_array($itemDatum) ? json_encode($itemDatum) : $itemDatum;
                     }
 
                     $found = RawItem::getLastState($source->id, $item['car_id']);
