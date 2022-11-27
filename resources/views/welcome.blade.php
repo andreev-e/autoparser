@@ -401,22 +401,60 @@
             @endauth
         </div>
     @endif
-    <ul>
-        @foreach ($favorites as $favorite)
-            <li>{{ $favorite->data['car_id'] }}</li>
-            <li>{{ $favorite->data['price_usd'] }} USD</li>
-            <li>{{ $favorite->data['model_id'] }}</li>
-            <li>{{ $favorite->data['vin'] }}</li>
-{{--            <li>{{ dd($favorite->data) }}</li>--}}
-        @endforeach
-    </ul>
-
-    <ul>
-        @foreach ($stats as $key => $row)
-            <li>{{ $key }}: {{ $row }}</li>
-        @endforeach
-    </ul>
-
+    @foreach ($favorites as $favorite)
+        <div class="px-6">
+            @php
+                $current = $favorite->getState($favorite->source_id, $favorite->external_id);
+            @endphp
+            @if (isset($current->data['photo']))
+                <img
+                    src="https://static.my.ge/myauto/photos/{{ $favorite->data['photo'] }}/large/{{ $favorite->data['car_id'] }}_1.jpg"
+                    width="200px">
+            @endif
+            <h2>Current</h2>
+            <div>
+                {{ $current->created_at }} #{{$current->id}}#
+            </div>
+            <ul>
+                <li>{{ $current->data['car_id'] }}</li>
+                <li>price_usd {{ $current->data['price_usd'] }} USD</li>
+                <li>model_id {{ $current->data['model_id'] }}</li>
+                <li>VIN {{ $current->data['vin'] }}</li>
+                <li>views {{ $current->data['views'] }}</li>
+                <li>order_number {{ $current->data['order_number'] }}</li>
+                <li>active_ads {{ $current->data['active_ads'] }}</li>
+                <li>created_at {{ $current->created_at }}</li>
+            </ul>
+            @foreach ($current->changes() as $version)
+                <div>
+                    <h2>Older versions</h2>
+                    <div>
+                        {{ $version->created_at }} #{{$version->id}}#
+                    </div>
+                    @php
+                        $stage = $version->getStageState();
+                    @endphp
+                    <ul>
+                        <li>{{ $stage->data['car_id'] }}</li>
+                        <li>price_usd {{ $stage->data['price_usd'] }} USD</li>
+                        <li>model_id {{ $stage->data['model_id'] }}</li>
+                        <li>VIN {{ $stage->data['vin'] }}</li>
+                        <li>views {{ $stage->data['views'] }}</li>
+                        <li>order_number {{ $stage->data['order_number'] }}</li>
+                        <li>active_ads {{ $stage->data['active_ads'] }}</li>
+                        <li>created_at {{ $stage->created_at }}</li>
+                    </ul>
+                </div>
+            @endforeach
+        </div>
+    @endforeach
+    <div>
+        <ul>
+            @foreach ($stats as $key => $row)
+                <li>{{ $key }}: {{ $row }}</li>
+            @endforeach
+        </ul>
+    </div>
 </div>
 </body>
 </html>

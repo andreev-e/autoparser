@@ -11,8 +11,11 @@ class FrontendController extends Controller
         $favorite = [
             '81723431',
             '79889665',
+            '77205105',
+            '81847743',
+            '81559259',
         ];
-        $favorites = RawItem::query()->whereIn('external_id', $favorite)->get();
+        $favorites = (new RawItem)->onlyBasic()->whereIn('external_id', $favorite)->get();
         $stats = [
             'favorites' => count($favorites),
             'total_cars' => (new RawItem)->onlyBasic()->count(),

@@ -13,12 +13,14 @@ class Parse extends Command
 
     protected $description = 'Command description';
 
-    protected $pages = 5;
+    protected $pages = 10;
 
     public function handle()
     {
         $source = Source::query()->oldest()->first();
         $client = new \GuzzleHttp\Client();
+
+        //https://api2.myauto.ge/appdata/other_en.json
 
         for ($i = 0; $i < $this->pages; $i++) {
             $response = $client->request('GET', $source->base_url, ['query' => [
@@ -38,7 +40,7 @@ class Parse extends Command
                         $item[$key] = is_array($itemDatum) ? json_encode($itemDatum) : $itemDatum;
                     }
 
-                    $found = RawItem::getLastState($source->id, $item['car_id']);
+                    $found = RawItem::getState($source->id, $item['car_id']);
                     if ($found) {
                         $fullDiff = array_merge(array_diff($found->data, $item), array_diff($item, $found->data));
                         if (count($fullDiff) > 0) {

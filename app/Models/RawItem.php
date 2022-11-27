@@ -22,26 +22,48 @@ class RawItem extends Model
         'is_basic' => 'boolean',
     ];
 
-    public static function getLastState($sourceId, $externalId): self|null
+    public function getStageState(): self|null
     {
-        $items = RawItem::query()->where([
+        return $this->getState($this->source_id, $this->external_id, $this->id);
+    }
+
+    public static function getState($sourceId, $externalId, $stateId = null): self|null
+    {
+        $base = RawItem::query()->firstWhere([
             'source_id' => $sourceId,
             'external_id' => $externalId,
-        ])->oldest()->get();
+            'is_basic' => true,
+        ]);
 
-        if (count($items)) {
-            $base = $items->first();
-            foreach ($items as $item) {
-                $base->data = array_merge($base->data, $item->data);
-            }
-            return $base;
+        $changes = RawItem::query()->where([
+            'source_id' => $sourceId,
+            'external_id' => $externalId,
+            'is_basic' => false,
+        ])
+            ->when($stateId, function (Builder $query) use ($stateId){
+                return $query->where('id', '<', $stateId);
+            })
+            ->oldest()->get();
+
+        foreach ($changes as $change) {
+            $base->data = array_merge($base->data, $change->data);
+            $base->created_at = $change->created_at;
+            $base->id = $change->id;
         }
 
-        return null;
+        return $base;
     }
 
     public function onlyBasic($option = true): Builder
     {
         return $this->query()->where('is_basic', $option);
+    }
+
+    public function changes()
+    {
+        return $this->query()
+            ->whereNot('id', $this->id)
+            ->where('external_id', $this->external_id)
+            ->get();
     }
 }
