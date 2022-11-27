@@ -9,10 +9,14 @@ class FrontendController extends Controller
     public function index()
     {
         $last = RawItem::query()->latest()->first()->external_id;
+
         $favorite = [
             '81723431',
             '79889665',
             '81559259',
+            '81036243',
+            '80372497',
+            '80421009',
             $last
         ];
 
