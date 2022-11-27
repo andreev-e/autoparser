@@ -18,7 +18,6 @@ return new class extends Migration {
             $table->foreignIdFor(Source::class);
             $table->string('external_id');
             $table->json('data');
-            $table->char('hash');
             $table->timestamp('created_at');
         });
     }
