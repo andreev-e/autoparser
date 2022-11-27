@@ -2,7 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\RawItem;
+use App\Models\Source;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class Parse extends Command
 {
@@ -12,23 +15,39 @@ class Parse extends Command
 
     public function handle()
     {
-        $endpoint = "https://api2.myauto.ge/ka/products";
+        $source = Source::query()->oldest()->first();
         $client = new \GuzzleHttp\Client();
-        $id = 5;
-        $value = "ABC";
 
-        $response = $client->request('GET', $endpoint, ['query' => [
+        $response = $client->request('GET', $source->base_url, ['query' => [
+            'page' => $source->page,
         ]]);
 
         $statusCode = $response->getStatusCode();
-        $content = $response->getBody();
 
+        if ($statusCode === 200) {
 
-        $content = json_decode($response->getBody(), true);
-        foreach ($content['data']['items'] as $item) {
+            DB::beginTransaction();
+            $content = json_decode($response->getBody(), true);
+            
+            foreach ($content['data']['items'] as $item) {
+                RawItem::query()->firstOrCreate(
+                    [
+                        'source_id' => $source->id,
+                        'external_id' => $item['car_id'],
+                        'hash' => md5(json_encode($item)),
+                    ],
+                    [
+                        'data' => $item,
+                    ]);
+            }
 
+            $source->page = $content['data']['meta']['current_page'] + 1;
+            if ($content['data']['meta']['current_page'] === $content['data']['meta']['last_page']) {
+                $source->page = 1;
+            }
+            $source->save();
+            DB::commit();
         }
-        dd($content) ;
         return Command::SUCCESS;
     }
 }
