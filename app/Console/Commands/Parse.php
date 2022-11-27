@@ -65,7 +65,7 @@ class Parse extends Command
                     }
                 }
                 $source->page = $source->page + 1;
-                if ($content['data']['meta']['current_page'] === $content['data']['meta']['last_page']) {
+                if ($content['data']['meta']['current_page'] >= $content['data']['meta']['last_page']) {
                     $source->page = 1;
                 }
                 $source->save();
