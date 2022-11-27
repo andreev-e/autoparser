@@ -8,8 +8,6 @@ class FrontendController extends Controller
 {
     public function index()
     {
-        $last = RawItem::query()->latest()->first()->external_id;
-
         $favorite = [
             '81723431',
             '79889665',
@@ -18,7 +16,6 @@ class FrontendController extends Controller
             '80372497',
             '80421009',
             '81559259',
-            $last
         ];
 
         $favorites = (new RawItem)->onlyBasic()->whereIn('external_id', $favorite)->get();
