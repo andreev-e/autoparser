@@ -413,36 +413,22 @@
             @endif
             <h2>Current</h2>
             <div>
-                {{ $current->created_at }} #{{$current->id}}#
+                {{ $current->created_at }}
             </div>
             <ul>
-                <li>{{ $current->data['car_id'] }}</li>
-                <li>price_usd {{ $current->data['price_usd'] }} USD</li>
-                <li>model_id {{ $current->data['model_id'] }}</li>
-                <li>VIN {{ $current->data['vin'] }}</li>
-                <li>views {{ $current->data['views'] }}</li>
-                <li>order_number {{ $current->data['order_number'] }}</li>
-                <li>active_ads {{ $current->data['active_ads'] }}</li>
-                <li>created_at {{ $current->created_at }}</li>
+                @include('characteristics', ['data' => $current->data, 'fields' => $fields])
             </ul>
             @foreach ($current->changes() as $version)
                 <div>
                     <h2>Older versions</h2>
                     <div>
-                        {{ $version->created_at }} #{{$version->id}}#
+                        {{ $version->created_at }}
                     </div>
                     @php
                         $stage = $version->getStageState();
                     @endphp
                     <ul>
-                        <li>{{ $stage->data['car_id'] }}</li>
-                        <li>price_usd {{ $stage->data['price_usd'] }} USD</li>
-                        <li>model_id {{ $stage->data['model_id'] }}</li>
-                        <li>VIN {{ $stage->data['vin'] }}</li>
-                        <li>views {{ $stage->data['views'] }}</li>
-                        <li>order_number {{ $stage->data['order_number'] }}</li>
-                        <li>active_ads {{ $stage->data['active_ads'] }}</li>
-                        <li>created_at {{ $stage->created_at }}</li>
+                        @include('characteristics', ['data' => $stage->data, 'fields' => $fields])
                     </ul>
                 </div>
             @endforeach
