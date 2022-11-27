@@ -402,6 +402,16 @@
         </div>
     @endif
     <ul>
+        @foreach ($favorites as $favorite)
+            <li>{{ $favorite->data['car_id'] }}</li>
+            <li>{{ $favorite->data['price_usd'] }} USD</li>
+            <li>{{ $favorite->data['model_id'] }}</li>
+            <li>{{ $favorite->data['vin'] }}</li>
+{{--            <li>{{ dd($favorite->data) }}</li>--}}
+        @endforeach
+    </ul>
+
+    <ul>
         @foreach ($stats as $key => $row)
             <li>{{ $key }}: {{ $row }}</li>
         @endforeach
