@@ -13,12 +13,18 @@ class Parse extends Command
 
     protected $description = 'Command description';
 
-    protected $pages = 10;
+    protected int $pages = 10;
+
+    protected array $locations_ge = [2, 3, 4, 7, 15, 30, 113, 52, 37, 36, 38, 39, 40, 31, 5, 41, 44, 47, 48, 53, 54, 8, 16, 6, 14, 13, 12, 11, 10, 9, 55, 56, 57, 59, 58, 61, 62, 63, 64, 66, 71, 72, 74, 75, 76, 77, 78, 80, 81, 82, 83, 84, 85, 86, 87, 88, 91, 96, 97, 101, 109];
 
     public function handle()
     {
         $source = Source::query()->oldest()->first();
         $client = new \GuzzleHttp\Client();
+
+//        foreach (RawItem::query()->whereNotIn('data->location_id', $this->locations_ge)->get() as $item) {
+//            RawItem::query()->where('external_id', $item->external_id)->delete();
+//        }
 
         //https://api2.myauto.ge/appdata/other_en.json
 
@@ -26,7 +32,7 @@ class Parse extends Command
             $response = $client->request('GET', $source->base_url, ['query' => [
                 'Page' => $source->page,
                 'Period' => '3w',
-                'Locs' => '2.3.4.7.15.30.113.52.37.36.38.39.40.31.5.41.44.47.48.53.54.8.16.6.14.13.12.11.10.9.55.56.57.59.58.61.62.63.64.66.71.72.74.75.76.77.78.80.81.82.83.84.85.86.87.88.91.96.97.101.109'
+                'Locs' => implode('.', $this->locations_ge),
             ]]);
 
             $statusCode = $response->getStatusCode();

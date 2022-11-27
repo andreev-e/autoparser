@@ -24,7 +24,7 @@ class FrontendController extends Controller
         ];
 
         $fields = [
-            'customs_passed', 'for_rent', 'active_ads'
+            'customs_passed', 'for_rent', 'active_ads', 'vin'
         ];
 
         return view('welcome', compact('stats', 'favorites', 'fields'));
