@@ -56,6 +56,7 @@ class Parse extends Command
                                 'source_id' => $source->id,
                                 'external_id' => $item['car_id'],
                                 'data' => $item,
+                                'is_basic' => true,
                             ]);
                     }
                 }

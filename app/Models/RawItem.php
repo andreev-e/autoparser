@@ -14,12 +14,13 @@ class RawItem extends Model
         'source_id',
         'hash',
         'data',
+        'is_basic',
     ];
 
     protected $casts = [
         'data' => 'array',
+        'is_basic' => 'boolean',
     ];
-
 
     public static function getLastState($sourceId, $externalId): self|null
     {
