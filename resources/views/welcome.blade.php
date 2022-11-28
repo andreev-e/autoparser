@@ -409,11 +409,11 @@
             @if (isset($current->data['photo']))
                 <img
                     src="https://static.my.ge/myauto/photos/{{ $favorite->data['photo'] }}/large/{{ $favorite->data['car_id'] }}_1.jpg"
-                    width="200px">
+                    height="200px">
             @endif
             <h2>Current</h2>
             <div>
-                {{ $current->created_at }}
+                #{{ $current->data['car_id'] }} {{ $current->created_at }}
             </div>
             <ul>
                 @include('characteristics', ['data' => $current->data, 'fields' => $fields])
